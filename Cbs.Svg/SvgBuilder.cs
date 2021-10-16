@@ -16,16 +16,23 @@ namespace Cbs.Svg
             };
         }
 
-        public void DrawLine(PointF start, PointF end)
+        public void DrawLine(PointF start, PointF end, Color? colour = null)
         {
-            SvgPath line = SvgDraw.Line(start, end);
+            SvgPath line = SvgDraw.Line(start, end, colour);
 
             Document.Children.Add(line);
         }
 
-        public void DrawText(string text, PointF position, int fontSize)
+        public void DrawText(string text, PointF position, int fontSize, Color? colour = null)
         {
-            SvgText svgText = SvgDraw.Text(text, position, fontSize);
+            SvgText svgText = SvgDraw.Text(text, position, fontSize, colour);
+
+            Document.Children.Add(svgText);
+        }
+        
+        public void DrawVerticalText(string text, PointF position, int fontSize, Color? colour = null)
+        {
+            SvgText svgText = SvgDraw.VerticalText(text, position, fontSize, colour);
 
             Document.Children.Add(svgText);
         }

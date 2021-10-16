@@ -65,6 +65,7 @@ namespace svg_graph_builder
 
             DrawGraphAxes(builder, graphBounds, axesData, axesGraphicalData);
             DrawBars(builder, graphBounds, graph.Data, axesData, axesGraphicalData);
+            DrawLabels(builder, graphBounds, graph);
 
             SvgDocument svg = builder.Document;
             return svg;
@@ -123,9 +124,7 @@ namespace svg_graph_builder
 
             for (int i = 0; i < scale.Count; ++i)
             {
-                PointF pipStart = new PointF(graphBounds.OriginX + scale[i], graphBounds.OriginY);
                 PointF pipEnd = new PointF(graphBounds.OriginX + scale[i], graphBounds.OriginY + pipHeight);
-                //builder.DrawLine(pipStart, pipEnd);
 
                 PointF textPosition = new PointF(pipEnd.X, pipEnd.Y + scaleLabelMargin + fontSize);
                 builder.DrawText(data.XAxisPoints[i], textPosition, fontSize);
@@ -144,7 +143,7 @@ namespace svg_graph_builder
                 PointF pipStart = new PointF(graphBounds.OriginX, graphBounds.OriginY - scale[i]);
                 PointF pipEnd = new PointF(graphBounds.OriginX - pipWidth, graphBounds.OriginY - scale[i]);
                 builder.DrawLine(pipStart, pipEnd);
-                //builder.DrawLine(pipStart, new PointF(graphBounds.OriginX + graphBounds.Width, pipStart.Y));
+                builder.DrawLine(pipStart, new PointF(graphBounds.OriginX + graphBounds.Width, pipStart.Y), Color.LightGray);
 
                 PointF textPosition = new PointF(pipEnd.X - 20, pipEnd.Y + fontSize / 4);
                 builder.DrawText(data.YAxisPoints[i].ToString(), textPosition, fontSize);
@@ -159,11 +158,44 @@ namespace svg_graph_builder
             Color colour = ColourUtility.RandomColour();
             for (int i = 0; i < axesGraphicalData.XScale.Count; ++i)
             {
-                int height = (int)Math.Round((float.Parse(graphData[i].Y.ToString()) / yMax) * graphBounds.Height);
+                string value = graphData[i].Y.ToString();
+                int height = (int)Math.Round((float.Parse(value) / yMax) * graphBounds.Height);
                 Size size = new Size(barWidth, height);
                 PointF position = new PointF(graphBounds.OriginX + axesGraphicalData.XScale[i] - barWidth / 2, graphBounds.OriginY - height - 1);
                 builder.DrawRect(position, size, colour);
+
+                int fontSize = 20;
+                PointF labelPosition = new PointF(position.X + barWidth/2, position.Y+fontSize);
+                builder.DrawText(value, labelPosition, fontSize, Color.White);
             }
+        }
+
+        private static void DrawLabels(SvgBuilder builder, GraphBounds graphBounds, Graph graph)
+        {
+            DrawTitle(builder, graphBounds, graph.Title);
+            DrawXLabel(builder, graphBounds, graph.XAxisLabel);
+            DrawYLabel(builder, graphBounds, graph.YAxisLabel);
+        }
+
+        private static void DrawTitle(SvgBuilder builder, GraphBounds graphBounds, string title)
+        {
+            int fontSize = 32;
+            PointF position = new PointF(graphBounds.OriginX + graphBounds.Width / 2, fontSize + 10);
+            builder.DrawText(title, position, fontSize);
+        }
+
+        private static void DrawXLabel(SvgBuilder builder, GraphBounds graphBounds, string xAxisLabel)
+        {
+            int fontSize = 24;
+            PointF position = new PointF(graphBounds.OriginX + graphBounds.Width / 2, graphBounds.OriginY + 10 + (fontSize * 2));
+            builder.DrawText(xAxisLabel, position, fontSize);
+        }
+
+        private static void DrawYLabel(SvgBuilder builder, GraphBounds graphBounds, string yAxisLabel)
+        {
+            int fontSize = 24;
+            PointF position = new PointF(fontSize, graphBounds.OriginX + graphBounds.Width / 2);
+            builder.DrawVerticalText(yAxisLabel, position, fontSize);
         }
     }
 }

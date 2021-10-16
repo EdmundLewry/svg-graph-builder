@@ -13,13 +13,6 @@ namespace svg_graph_builder
         private const string OutputFile = "graph.svg";
         static void Main(string[] args)
         {
-            /* Take a yaml file as argument
-             * For each graph in yaml file
-             * If type is bar graph
-             * Create title at top centre
-             * Create x label at bottom centre
-             * Create y label at left centre (rotated)
-            */
             if (args.Length == 0)
                 return;
 
@@ -33,13 +26,6 @@ namespace svg_graph_builder
             {
                 GenerateGraphFile(width, height, graph);
             });
-        }
-
-        private static void GenerateGraphFile(int width, int height, Graph graph)
-        {
-            SvgDocument svg = GraphBuilder.Build(width, height, graph);
-
-            OutputSvg(svg);
         }
 
         private static int GetIArgOrDefault(string[] args, int index, int defaultValue)
@@ -58,6 +44,13 @@ namespace svg_graph_builder
             GraphCollection graphCollection = serializer.Deserialize<GraphCollection>(text);
 
             return graphCollection.Graphs.ToList();
+        }
+
+        private static void GenerateGraphFile(int width, int height, Graph graph)
+        {
+            SvgDocument svg = GraphBuilder.Build(width, height, graph);
+
+            OutputSvg(svg);
         }
 
         private static void OutputSvg(SvgDocument svg)

@@ -2,6 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace svg_graph_builder
 {
@@ -17,24 +20,44 @@ namespace svg_graph_builder
              * Create x label at bottom centre
              * Create y label at left centre (rotated)
             */
-            int width = 1000;
-            int height = 1000;
-            List<DataPoint> graphData = RetrieveGraphData();
+            if (args.Length == 0)
+                return;
 
-            SvgDocument svg = GraphBuilder.Build(width, height, graphData);
+            string filename = args[0];
+            int width = GetIArgOrDefault(args, 1, 1000);
+            int height = GetIArgOrDefault(args, 2, 1000);
+
+            List<Graph> graphs = RetrieveGraphData(filename);
+
+            graphs.ForEach(graph =>
+            {
+                GenerateGraphFile(width, height, graph);
+            });
+        }
+
+        private static void GenerateGraphFile(int width, int height, Graph graph)
+        {
+            SvgDocument svg = GraphBuilder.Build(width, height, graph);
 
             OutputSvg(svg);
         }
 
-        private static List<DataPoint> RetrieveGraphData()
+        private static int GetIArgOrDefault(string[] args, int index, int defaultValue)
         {
-            return new List<DataPoint>()
-            {
-                new DataPoint("Hello", 1),
-                new DataPoint("Goodbye", 2.5),
-                new DataPoint("Another", 1.2),
-                new DataPoint("One", 0.2)
-            };
+            if (index >= args.Length)
+                return defaultValue;
+
+            bool success = int.TryParse(args[index], out int value);
+            return success ? value : defaultValue;
+        }
+
+        private static List<Graph> RetrieveGraphData(string filename)
+        {
+            string text = File.ReadAllText(filename);
+            var serializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
+            GraphCollection graphCollection = serializer.Deserialize<GraphCollection>(text);
+
+            return graphCollection.Graphs.ToList();
         }
 
         private static void OutputSvg(SvgDocument svg)

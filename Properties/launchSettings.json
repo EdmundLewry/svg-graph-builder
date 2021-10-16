@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "svg-graph-builder": {
+      "commandName": "Project",
+      "commandLineArgs": "ChangeSummaryGraph.yaml"
+    }
+  }
+}

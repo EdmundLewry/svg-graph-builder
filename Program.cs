@@ -69,9 +69,10 @@ namespace svg_graph_builder
 
         private static void OutputSvg(SvgDocument svg, string filename)
         {
-            string suffix = DateTimeOffset.UtcNow.ToString("ddMMyy");
+            filename = filename.Replace(" ", "_");
+            string prefix = DateTimeOffset.UtcNow.ToString("ddMMyy");
             Console.WriteLine(svg.GetXML());
-            File.WriteAllText($"{filename}-{OutputFile}-{suffix}", svg.GetXML());
+            File.WriteAllText($"{prefix}-{filename}-{OutputFile}", svg.GetXML());
         }
     }
 }

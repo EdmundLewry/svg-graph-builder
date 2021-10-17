@@ -3,28 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace svg_graph_builder
 {
     public static class Program
     {
         private const string OutputFile = "graph.svg";
+        private const string ConfigurationFile = "config.yaml";
+
         static void Main(string[] args)
         {
             if (args.Length == 0)
                 return;
+            
+            Configuration configuration = ReadConfiguration();
 
             string filename = args[0];
-            int width = GetIArgOrDefault(args, 1, 1000);
-            int height = GetIArgOrDefault(args, 2, 1000);
+            int width = GetIArgOrDefault(args, 1, configuration.DefaultWidth);
+            int height = GetIArgOrDefault(args, 2, configuration.DefaultHeight);
 
             List<Graph> graphs = RetrieveGraphData(filename);
 
             graphs.ForEach(graph =>
             {
-                GenerateGraphFile(width, height, graph);
+                GenerateGraphFile(width, height, graph, configuration);
             });
         }
 
@@ -39,16 +41,28 @@ namespace svg_graph_builder
 
         private static List<Graph> RetrieveGraphData(string filename)
         {
-            string text = File.ReadAllText(filename);
-            var serializer = new DeserializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
-            GraphCollection graphCollection = serializer.Deserialize<GraphCollection>(text);
-
+            GraphCollection graphCollection = ReadYamlFile<GraphCollection>(filename);
             return graphCollection.Graphs.ToList();
         }
 
-        private static void GenerateGraphFile(int width, int height, Graph graph)
+        private static Configuration ReadConfiguration()
         {
-            SvgDocument svg = GraphBuilder.Build(width, height, graph);
+            if (File.Exists(ConfigurationFile))
+                return ReadYamlFile<Configuration>(ConfigurationFile);
+
+            return Configuration.Default();
+        }
+
+        private static T ReadYamlFile<T>(string filename)
+        {
+            string text = File.ReadAllText(filename);
+            return YamlSerialization.DeserializeObject<T>(text);
+        }
+
+        private static void GenerateGraphFile(int width, int height, Graph graph, Configuration configuration)
+        {
+            GraphBuilder builder = GraphBuilderFactory.Create(graph.Type, configuration);
+            SvgDocument svg = builder.Build(width, height, graph);
 
             OutputSvg(svg);
         }

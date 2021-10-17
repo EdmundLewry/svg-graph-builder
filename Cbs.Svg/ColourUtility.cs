@@ -6,7 +6,7 @@ namespace Cbs.Svg
 {
     public static class ColourUtility
     {
-        public static List<Color> StandardColour() => new() { Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Brown, Color.DarkGray, Color.Pink, Color.Purple };
+        public static List<Color> StandardColour() => new() { Color.Red, Color.Green, Color.Blue, Color.Brown, Color.DarkGray, Color.Pink, Color.Purple };
 
         public static Color RandomColour()
         {

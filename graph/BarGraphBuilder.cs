@@ -204,7 +204,7 @@ namespace svg_graph_builder
         {
             int height = CalculateBarHeight(graphBounds, yMax, value);
             float x = graphBounds.OriginX + scaleOffset - commonBarData.BarWidth / 2;
-            float y = graphBounds.OriginY - height - 1;
+            float y = graphBounds.OriginY - height;
 
             BarGraphicsData barData = commonBarData with { X = x, Y = y, BarHeight = height };
             return barData;

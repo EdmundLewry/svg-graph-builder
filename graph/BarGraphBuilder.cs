@@ -214,7 +214,9 @@ namespace svg_graph_builder
         {
             Size size = new Size(barData.BarWidth, barData.BarHeight);
             PointF position = new PointF(barData.X, barData.Y);
-            builder.DrawRect(position, size, barData.Colour);
+            SvgElement barElement = SvgDraw.Rect(position, size, barData.Colour);
+            barElement.CustomAttributes.Add("class", "bar");
+            builder.DrawElement(barElement);
 
             int fontSize = Configuration.H3FontSize;
             PointF labelPosition = new PointF(position.X + barData.BarWidth / 2, position.Y + fontSize);

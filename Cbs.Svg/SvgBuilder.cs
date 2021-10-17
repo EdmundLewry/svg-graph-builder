@@ -43,6 +43,11 @@ namespace Cbs.Svg
 
             Document.Children.Add(svgRectangle);
         }
+
+        public void DrawElement(SvgElement element)
+        {
+            Document.Children.Add(element);
+        }
     }
 
 }

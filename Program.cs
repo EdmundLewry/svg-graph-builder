@@ -64,13 +64,14 @@ namespace svg_graph_builder
             GraphBuilder builder = GraphBuilderFactory.Create(graph.Type, configuration);
             SvgDocument svg = builder.Build(width, height, graph);
 
-            OutputSvg(svg);
+            OutputSvg(svg, graph.Title);
         }
 
-        private static void OutputSvg(SvgDocument svg)
+        private static void OutputSvg(SvgDocument svg, string filename)
         {
+            string suffix = DateTimeOffset.UtcNow.ToString("ddMMyy");
             Console.WriteLine(svg.GetXML());
-            File.WriteAllText(OutputFile, svg.GetXML());
+            File.WriteAllText($"{filename}-{OutputFile}-{suffix}", svg.GetXML());
         }
     }
 }

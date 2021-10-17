@@ -1,8 +1,0 @@
-graphs:
-- type: bar
-  title: Lines Changed Per Week
-  xAxisLabel: Date
-  yAxisLabel: Number of Lines Changed
-  data:
-  - x: 18/09/2021
-    y: 650

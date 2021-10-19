@@ -117,8 +117,8 @@ namespace svg_graph_builder
 
         private void DrawGraphAxes(SvgBuilder builder, GraphBounds graphBounds, AxesData data, AxesGraphicalData axesGraphicalData)
         {
-            DrawXAxis(builder, graphBounds, data, axesGraphicalData.XScale);
             DrawYAxis(builder, graphBounds, data, axesGraphicalData.YScale);
+            DrawXAxis(builder, graphBounds, data, axesGraphicalData.XScale);
         }
 
         private void DrawXAxis(SvgBuilder builder, GraphBounds graphBounds, AxesData data, List<float> scale)
